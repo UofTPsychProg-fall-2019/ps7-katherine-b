@@ -1,0 +1,87 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf500
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fswiss\fcharset0 Helvetica-Bold;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww20820\viewh12100\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 NOTE: The details of my project have not been finalized but I have written down as much detail as I can. \
+\
+
+\f1\b \ul Summary of Experiment:
+\f0\b0 \
+\ulnone \
+My experiment will be looking at the effects of listening while driving and whether this varies as a function of age (looking at younger and older adults) . Participants will be asked to perform 2 drives in a driving simulator and will include performing a listening task (dual-tasking conditions of listening while driving). There will also be 2 other non-driving condition in which participants will be asked to complete only the listening task.\
+\
+The listening task will consist of participants listening to sentences presented in background noise. Participants will be asked to verbally state the last word of the sentence. The background noise will have two levels of difficulty\'97one where the noise will be quieter than the sentence stimuli (high signal-to-noise ratio (HSNR)) and the other where the noise will be the same loudness as the sentence stimuli (low signal-to-noise ratio (LSNR). The listening task will be recorded as either correct or incorrect and recoded as 1 for correct and 0 for incorrect. \
+\
+Average standard deviation in speed will be examined as the driving dependent measure. \
+\
+The IVs will be Age (Younger vs. Older) by Listening Task Difficulty (HSNR vs. LSNR) by Task Type (Single Task vs Dual Task) with Age as the between-subject factor and Listening Task Difficulty and Task Type as the within-subject factors. \
+\
+The DVs will be word accuracy scores measured as a percentage of correct responses and average standard deviation in speed across the entire drive measured in km/h.\
+\
+\
+
+\f1\b \ul Transformation of Data:
+\f0\b0 \
+\
+\ulnone The summary measures I will need to answer my research question: I will need to create a table (done in excel then read into R) that includes the subject ID, age group of that participant, the accuracy score in each condition and the mean SD speed in each of the dual-task conditions. I will also need to include which conditions had the HSNR listening task difficulty level and which had the LSNR listening task difficulty level. Each participant will have 4 rows representing the 4 conditions in the experiment. (Ex column names: \'93Subject_ID\'94, \'93Age_Group\'94 , \'93Task_Type\'94 ,  \'93Listening_Difficulty\'94,  \'93Accuracy, \'93SD_Speed\'94 \'97with Age Group as either Younger or Older, and Task Type as either Single or Dual, and Listening Difficulty as either HSNR or LSNR).  \
+\
+Accuracy and SD Speed will already be calculated in the excel doc. SD Speed is already given from the driving software used. Accuracy will be calculated in my excel as the software used for this will create that measure for me. \
+\
+\
+
+\f1\b \ul Recoding:\
+\
+
+\f0\b0 \ulnone Data <- read_excel ("example_data.xlsx") # will read in the excel that will be laid out as described above\
+\
+Data.Recode <- within (Data, \{\
+  Age_Group <- ifelse(Age_Group== "Younger" , 1, -1) #will recode my younger and older as 1s and -1s respectively\
+  Task_Type <- ifelse(Task_Type== "Dual" , 1,-1) #will recode my single and dual as -1s, and 1s  respectively\
+  Listening_Difficulty <- ifelse(Listening_Difficulty=="HSNR" , 1, -1) #will recode my two different listening task difficulty types HSNR and LSNR as 1s and -1s respectively\
+\})\ul \
+\ulnone \
+\
+
+\f1\b \ul Data Analysis:\
+\
+
+\f0\b0 Mean Accuracy for Listening Difficulty Collapsed Across Everything Else:\
+\
+\ulnone Mean_LSNR_A <- mean(Accuracy for LSNR, data=Data) \
+Mean_LSNR-A <- mean(Accuracy for HSNR, data=Data) \ul \
+\
+Mean SD Speed for \ulc0 Listening Difficulty Collapsed Across Everything Else\ulc0 :\
+\
+\ulnone Mean_LSNR_S <- mean(SD_Speed for LSNR) \
+Mean_LSNR_S <- mean(SD_Speed for HSNR) 
+\f1\b \ul \
+\
+
+\f0\b0 Accuracy DV Data:\
+\
+\ulnone I will run a 2 (Younger, Older) x 2 (HSNR, LSNR) x 2 (Single, Dual) Mixed Factorial ANOVA with age as the between subjects factor and the dependent variable as word accuracy:\
+\
+Word.Accuracy.Model <- 3-way ANOVA (data = Data.Recode, dv = (Accuracy) , wid=(Subject_Number), within = (Task_Type, Listening_Difficulty), between = (Age_Group))\
+\
+Post-Hoc Analyses for any Sig. Main Effects/Interaction:\
+\
+pairwise.t.test(Age_Group, Listening_Difficulty) \
+pairwise.t.test(Age_Group, Task_Type) \
+pairwise.t.test(Task_Type, Listening_Difficulty) \
+\
+\ul SD Speed DV Data:\ulnone \
+\
+I will run a  2 (Younger, Older) x 2 (HSNR, LSNR) Mixed Factorial ANOVA with age as the between subjects factor and the dependent variable as SD speed:\
+\
+SD.Speed.Model <- anova(data = Data.Recode, dv = (SD_Speed) , wid=(Subject_Number), within = (Listening_Difficulty), between = (Age_Group))\
+\
+Post-Hoc Analyses for any Sig. Main Effects/Interaction:\
+\
+pairwise.t.test(Age_Group, Listening_Difficulty) \
+\
+\
+\
+}
